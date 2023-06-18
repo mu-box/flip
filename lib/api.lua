@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   20 Nov 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Emitter = require('core').Emitter
 local hrtime = require('uv').hrtime
@@ -49,8 +41,8 @@ end
 function Api:node_status(req,res)
 	local data = {}
 	for id,node in pairs(self.flip.servers) do
-		
-		data[#data + 1] = 
+
+		data[#data + 1] =
 			{id = node.id
 			,state = node.state
 			,systems = node.systems
@@ -66,8 +58,8 @@ end
 function Api:system_status(req,res)
 	local data = {}
 	for id,node in pairs(self.flip.systems) do
-		
-		data[#data + 1] = 
+
+		data[#data + 1] =
 			{id = node.id
 			,state = node.state
 			,opts = node.opts}

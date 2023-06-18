@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   18 Feb 2015 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Emitter = require('core').Emitter
 local hrtime = require('uv').hrtime
@@ -50,7 +42,7 @@ function wrap(client)
 end
 
 function parser(buffer)
-	
+
 	local operations = {}
 	while #buffer > 4 do
 		local length = Packet:integerify(buffer:sub(1,4))
@@ -97,7 +89,7 @@ function push_sync(operation,client)
 	logger:debug("log cursor open")
 
 	local key,op = Cursor.get(cursor,version,Cursor.MDB_SET_KEY,"unsigned long*")
-	
+
 	-- logger:info("comparing last known logs",client.version,key,key[0],version)
 	if not key or key[0] == 0 then
 		logger:info("performing full sync")
@@ -117,7 +109,7 @@ function push_sync(operation,client)
 
 			client.write(json)
 			id,json,err = Cursor.get(obj_cursor,id,Cursor.MDB_NEXT)
-		end	
+		end
 		Cursor.close(obj_cursor)
 		client.write("")
 	else

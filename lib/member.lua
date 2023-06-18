@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   23 Oct 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Emitter = require('core').Emitter
 local hrtime = require('uv').hrtime
@@ -73,8 +65,8 @@ end
 
 function Member:needs_ping()
 	return not (self.id == self.config.id) and (
-			(hrtime() - self.last_check > (1000000 * (1.5 * self.config.gossip_interval))) or 
-			(hrtime() - self.last_send > (1000000 * self.config.gossip_interval)) or 
+			(hrtime() - self.last_check > (1000000 * (1.5 * self.config.gossip_interval))) or
+			(hrtime() - self.last_send > (1000000 * self.config.gossip_interval)) or
 			(self.state == 'probably_down'))
 end
 
@@ -103,11 +95,11 @@ end
 function Member:update_state(new_state)
 	self:clear_alive_check()
 	if not (self.state == new_state) and not ((new_state == 'probably_down') and (self.state == 'down'))then
-		
+
 		self:emit('state_change',self,new_state)
 
 		logger:info('member has transitioned',self.id,self.state,new_state)
-		
+
 		self.state = new_state
 		self:probe(self.config.id)
 	end

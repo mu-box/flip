@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   4 Feb 2015 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 -- this script will take a folder of scripts and load them into flip
 -- as a new system, or update an existing system.
@@ -69,7 +61,7 @@ function load_routes(directory,route,routes,scripts)
 					if scripts[key] then
 						logger:warning("route conflict, using previously loaded script",scripts[key])
 					else
-						scripts[key] = {["$script"] = res}	
+						scripts[key] = {["$script"] = res}
 					end
 					routes[method][route] = key
 				end
@@ -89,8 +81,8 @@ function load_dir(directory,scripts,is_root)
 	if is_dir then
 		for _idx,file in pairs(files) do
 			local path = directory .. "/" .. file
-			
-			
+
+
 			logger:debug("reading file",path)
 			if path:sub(-4) == ".txt" then
 				local success,res = read_file(path)
@@ -108,11 +100,11 @@ function load_dir(directory,scripts,is_root)
 						logger:error(err)
 						process:exit(1)
 					end
-					
+
 					if scripts[name] then
 						logger:info("name conflict",opts[name])
 					else
-						scripts[name] = {["$script"] = res}	
+						scripts[name] = {["$script"] = res}
 					end
 
 					opts[name] = name
@@ -141,7 +133,7 @@ return function(directory,system_name)
 		-- local success,help = pcall(function() return fs.readFileSync(directory .. "/help.txt") end)
 		-- system.description = description
 		-- system.help = help
-		
+
 
 		local object,err = store:fetch("systems",system_name)
 		if err and not (err == "MDB_NOTFOUND: No matching key/data pair found") then

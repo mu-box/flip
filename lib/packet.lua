@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   19 Nov 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 
 -- this probably could be optimized
@@ -25,7 +17,7 @@ end
 
 function Packet:pack(value)
 	local a,b,c,d
-	d = value 
+	d = value
 	c = math.floor(d / 256)
 	b = math.floor(c / 256)
 	a = math.floor(b / 256)
@@ -61,7 +53,7 @@ function Packet:build(secret,id,seq,alive_servers)
 	local a1,b1,c1,d1 = self:pack(seq)
 	local server_count = string.char(8 - (#alive_servers % 8))
 
-	local chunks = 
+	local chunks =
 		{secret:sub(0,32),string.rep("0",32 - math.min(32,secret:len()))
 		,a,b,c,d
 		,a1,b1,c1
@@ -105,7 +97,7 @@ function Packet:parse(packet)
 		end
 		for i=0,max do
 			nodes[#nodes + 1] = not (bit.band(byte,bit.lshift(1,i)) == 0)
-			
+
 		end
 	end
 	return packet:sub(1,32),self:integerify(packet:sub(33,36)),self:integerify(packet:sub(37,40)),nodes

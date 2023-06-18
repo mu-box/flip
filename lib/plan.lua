@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   4 Nov 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Emitter = require('core').Emitter
 local JSON = require('json')
@@ -34,7 +26,7 @@ function Plan:initialize(system,sys_name,flip,store)
 	self.members = {}
 	self.member_map = {}
 	self.alive = {}
-	
+
 	-- we expose the ability to remove all data on start
 	-- it defaults to removing the data
 	self.mature = system.remove_on_start
@@ -72,11 +64,11 @@ function Plan:update(system)
 		process:exit(1)
 	end
 
-	-- In future topologies, I might need to prepare the data before I 
+	-- In future topologies, I might need to prepare the data before I
 	-- have the topology divide it between then nodes. right now I do
 	-- nothing
 	self.system = system
-	
+
 	self.new_plan_delay = system.delay
 	if not self.new_plan_delay then
 		self.new_plan_delay = 500
@@ -132,9 +124,9 @@ function Plan:next_plan()
 				local alive,idx,err = self:fetch_members()
 				if err and not (err == "old data") then
 					logger:warning("unable to start plan",err)
-					return 
+					return
 				end
-			
+
 				-- we ask the topology what data points are needed
 				local add,remove = topology.script(data,idx,alive)
 				logger:debug("toplogy returned",self.system.type,add,remove)
@@ -155,7 +147,7 @@ function Plan:next_plan()
 				else
 
 					-- we delay how long it takes for a new plan to be put in place
-					-- so that if any members change at the exact smae time, the 
+					-- so that if any members change at the exact smae time, the
 					-- changes get pulled into a single plan update
 					logger:debug("setting plan",new_plan)
 					local me = self
@@ -172,8 +164,8 @@ function Plan:next_plan()
 end
 
 function Plan:compute(new_plan)
-	
-	
+
+
 	-- we order the array to make the comparison easier
 	local new_add = new_plan.add
 	table.sort(new_add,table_sort)
@@ -185,11 +177,11 @@ function Plan:compute(new_plan)
 	logger:debug("start",idx,new_add,self.plan)
 
 	while lidx <= #new_add do
-		
+
 		logger:debug("compare",lidx,self.plan[index],new_add[lidx])
-		-- new_add = { "192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.4" }	
+		-- new_add = { "192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.4" }
 		-- self.plan = { "192.168.0.2", "192.168.0.4" }
-		
+
 		-- add .1
 		-- skip .2
 		-- add .3
@@ -201,13 +193,13 @@ function Plan:compute(new_plan)
 			-- if we run out of data, then we don't need to compare anymore
 			break
 		elseif (is_object and (self.plan[index].id > new_add[lidx].id)) or (not(is_object) and (self.plan[index] > new_add[lidx])) then
-			-- we need to add data points that are members of new_add and 
+			-- we need to add data points that are members of new_add and
 			-- not members of self.plan
 			logger:debug("adding",new_add[lidx])
 			add[#add +1] = new_add[lidx]
 			lidx = lidx + 1
 		elseif (is_object and (self.plan[index].id < new_add[lidx].id)) or (not(is_object) and (self.plan[index] < new_add[lidx])) then
-			-- we need to remove data points that are members of self.plan and 
+			-- we need to remove data points that are members of self.plan and
 			-- not members of new_add
 			logger:debug("removing",new_add[lidx])
 			remove[#remove +1] = self.plan[index]
@@ -232,7 +224,7 @@ function Plan:compute(new_plan)
 		add[#add +1] = new_add[idx]
 	end
 
-	-- on a startup, there could possibly be data that needs to be 
+	-- on a startup, there could possibly be data that needs to be
 	-- removed
 	if not self.mature then
 		logger:info("not mature yet, removing",new_plan.remove)
@@ -283,7 +275,7 @@ function Plan:run()
 
 	self.plan = newest_plan
 	table.sort(self.plan,table_sort)
-	
+
 	local queue = self.queue
 	self.queue = true
 
@@ -293,7 +285,7 @@ function Plan:run()
 		self:_run("down",queue.remove,function()
 			self.mature = true
 			self:emit('change',self.sys_name,queue.add,queue.remove)
-			
+
 			if self.queue == true then
 				-- if not, lets end
 				self.queue = nil
@@ -327,9 +319,9 @@ function Plan:_run(state,data,cb)
 
 		elseif cmd:sub(1,1) == '$' then
 			for idx,value in pairs(data) do
-				
+
 	 			local child = spawn(cmd:sub(1,cmd:len()),{value,JSON.stringify(sys.config)})
-				
+
 				child.stdout:on('data', function(chunk)
 					logger:debug("got",chunk)
 				end)

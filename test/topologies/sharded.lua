@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   20 Nov 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Sharded = require('../../lib/plan/topologies/sharded')
 
@@ -47,7 +39,7 @@ local all_permutations = nil
 
 all_permutations = function(data,cb,index)
 	local count = #data
-	if not index then 
+	if not index then
 		index = 1
 	elseif index > count then
 		return
@@ -82,7 +74,7 @@ test("data points are never missing in node failover situations", nil, function(
 	-- 15 -> maybe a few hours? (didn't run)
 	for count=1,9 do
 		local base_nodes = generate(count,count)
-		
+
 		all_permutations(base_nodes,function(nodes)
 			for dcount=1,count do
 				local all_up = {}

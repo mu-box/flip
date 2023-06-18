@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   27 Jan 2015 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Emitter = require('core').Emitter
 local logger = require('./logger')
@@ -32,11 +24,11 @@ function Store:configure(path,id,flip,ip,port,api)
 	self.scripts = {}
 	self.ip = ip
 	self.port = port
-	self.is_master = true
+	self.is_primary = true
 	self.connections = {}
 	self.push_connections = {}
-	self.master = {}
-	self.master_replication = {}
+	self.primary = {}
+	self.primary_replication = {}
 	self.db_path = path
 end
 
@@ -194,20 +186,20 @@ end
 function Store:store(b_id,id,data,cb)
 	if b_id == nil or id == nil or data == nil then
 		return nil,"missing required args"
-	elseif self.is_master then
+	elseif self.is_primary then
 		return self:_store(b_id,id,data,false,true,nil,cb)
 	else
-		return {master = {ip = self.master.ip, port = self.master.port}},"read only slave"
+		return {primary = {ip = self.primary.ip, port = self.primary.port}},"read only secondary"
 	end
 end
 
 function Store:delete(b_id,id,cb)
 	if b_id == nil or id == nil then
 		return nil,"missing required args"
-	elseif self.is_master then
+	elseif self.is_primary then
 		return self:_delete(b_id,id,false,true,nil,cb)
 	else
-		return {master = {ip = self.master.ip, port = self.master.port}},"read only slave"
+		return {primary = {ip = self.primary.ip, port = self.primary.port}},"read only secondary"
 	end
 end
 
@@ -289,7 +281,7 @@ function Store:_store(b_id,id,data,sync,broadcast,parent,cb)
 
 	-- commit all changes
 	err = Txn.commit(txn)
-	
+
 	if err then
 		logger:error("unable to commit transaction",err)
 		return nil,err
@@ -306,7 +298,7 @@ function Store:_store(b_id,id,data,sync,broadcast,parent,cb)
 		self:emit(b_id .. ":","store",id,data)
 		self:emit(b_id .. ":" .. id,"store",id,data)
 	end
-	
+
 	if not(sync) and not(self.loading) then
 		self:replicate(op,data.last_updated,cb,#self.push_connections)
 	end
@@ -326,7 +318,7 @@ function Store:_delete(b_id,id,sync,broadcast,parent,cb)
 	-- there has got to be a better way to do this.
 	logger:info(json,err)
 	if not json then
-		return 
+		return
 	end
 	local obj = JSON.parse(json)
 
@@ -366,7 +358,7 @@ function Store:_delete(b_id,id,sync,broadcast,parent,cb)
 
 	-- commit all changes
 	err = Txn.commit(txn)
-	
+
 	if err then
 		return nil,err
 	end
@@ -377,7 +369,7 @@ function Store:_delete(b_id,id,sync,broadcast,parent,cb)
 		self:emit(b_id .. ":","delete",id)
 		self:emit(b_id .. ":" .. id,"delete",id)
 	end
-	
+
 	if not sync then
 		self:replicate(op,op_timestamp,cb)
 	end
@@ -407,7 +399,7 @@ function  Store:replicate(operation,op_timestamp,cb)
 			end
 		end
 	end
-	
+
 	for id,connection in pairs(self.push_connections) do
 		total = total + 1
 		logger:debug("writing",tostring(op_timestamp),connection.id)

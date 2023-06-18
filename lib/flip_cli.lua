@@ -1,14 +1,6 @@
 #!/usr/local/bin/luvit
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   4 Feb 2015 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 local logger = require('./logger')
 local os = require('os')
 local JSON = require('json')
@@ -83,7 +75,7 @@ function main()
 						end)
 						coroutine.resume(co)
 						check_baton(batton,co)
-						
+
 					end
 				else
 					logger:error("command was not found",system,command)
@@ -92,10 +84,10 @@ function main()
 			end)
 		else
 			logger:error("command was not found",system,command)
-			process:exit(1)		
+			process:exit(1)
 		end
 	end)
-		
+
 end
 
 function check_baton(batton,co)
@@ -113,17 +105,17 @@ end
 
 function bind_store(batton)
 	return
-		{fetch = function(_,bucket,id) 
+		{fetch = function(_,bucket,id)
 			batton.call = function(cb) request('get','store',bucket,id,nil,{},cb) end
 			coroutine.yield()
 			return unpack(batton.respose)
 		end
-		,delete = function(_,bucket,id) 
+		,delete = function(_,bucket,id)
 			batton.call = function(cb) request('delete','store',bucket,id,nil,{},cb) end
 			coroutine.yield()
 			return unpack(batton.respose)
 		end
-		,store = function(_,bucket,id,data) 
+		,store = function(_,bucket,id,data)
 			logger:debug("making request",bucket,id,data)
 			batton.call = function(cb) request('post','store',bucket,id,data,{},cb) end
 			coroutine.yield()
@@ -174,7 +166,7 @@ function request(method,prefix,bucket,id,data,headers,cb)
 				if #chunks > 0 then
 					logger:error("bad response",table.concat(chunks))
 				end
-				
+
 				cb(nil,"not found")
 			else
 				if #chunks > 0 then

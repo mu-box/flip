@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   18 Nov 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Plan = require('./plan')
 
@@ -50,7 +42,7 @@ function System:disable(cb)
 	end
 end
 
-function System:check_system(kind,id,system_config) 
+function System:check_system(kind,id,system_config)
 	if kind == "store" then
 		local plan = self.plans[id]
 		if plan then
@@ -59,9 +51,9 @@ function System:check_system(kind,id,system_config)
 		else
 			self:init_system(system_config)
 			self.plans[id] = Plan:new(system_config,id,self.flip,self.store)
-			plan:on('change',function(id,...) 
-				self:emit('change:',id,...) 
-				self:emit('change:' .. id,id,...) 
+			plan:on('change',function(id,...)
+				self:emit('change:',id,...)
+				self:emit('change:' .. id,id,...)
 			end)
 			logger:info("created system:",id)
 		end
@@ -70,7 +62,7 @@ function System:check_system(kind,id,system_config)
 		if plan then
 			self:stop_system(system_config)
 			self.plans[id] = nil
-			plan:disable(function() 
+			plan:disable(function()
 				logger:info("removed system:",id)
 			end)
 		end
@@ -118,9 +110,9 @@ function System:enable()
 			self:init_system(system_config)
 
 			local plan = Plan:new(system_config,sys_id,self.flip,self.store)
-			plan:on('change',function(id,...) 
-				self:emit('change:',id,...) 
-				self:emit('change:' .. id,id,...) 
+			plan:on('change',function(id,...)
+				self:emit('change:',id,...)
+				self:emit('change:' .. id,id,...)
 			end)
 			self.plans[sys_id] = plan
 

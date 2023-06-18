@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   4 Sept 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 local Emitter = require('core').Emitter
 local dgram = require('dgram')
@@ -53,7 +45,7 @@ function Flip:start()
 	if self.config.exit_on_stdin_close == true then
 		uv.read_start(stdin, function(err,data)
 			if data == nil then
-				self.system:disable(function() process:exit(0) end)	
+				self.system:disable(function() process:exit(0) end)
 			end
 		end)
 	end
@@ -62,12 +54,12 @@ function Flip:start()
 		if not err then
 
 			-- if I'm not a member of the cluster, lets set that up.
-			
+
 			local member,err = self.store:fetch("servers",self.config.id)
 			logger:debug("found member",member,err)
 			if err == "MDB_NOTFOUND: No matching key/data pair found" then
 				logger:info("bootstrapping node into single cluster")
-				me = 
+				me =
 					{ip = self.config.gossip.ip
 					,port = self.config.gossip.port
 					,http_ip = self.config.api.ip
@@ -78,7 +70,7 @@ function Flip:start()
 				local object,err = self.store:store("servers",self.config.id,me)
 				if err then
 					logger:error("unable to create cluster: ",err)
-					process:exit(1)	
+					process:exit(1)
 				end
 			elseif err then
 				logger:error("unable to access store: ",err)
@@ -100,7 +92,7 @@ function Flip:start()
 			logger:debug("got config",config,err,self.id)
 			if err == "MDB_NOTFOUND: No matching key/data pair found" then
 				key = "secret"
-				config = 
+				config =
 					{["gossip_interval"] = 1000
 					,["ping_per_interval"] = 1
 					,["ping_timeout"] = 1500
@@ -126,7 +118,7 @@ function Flip:start()
 					process:exit(1)
 			else
 				member:update_state('alive')
-			
+
 				-- we start responding to udp queries
 				local socket = dgram.createSocket('udp4')
 				logger:debug("udp socket",member.port,member.ip)
@@ -250,7 +242,7 @@ function Flip:ping_members(members)
 			logger:debug('sending ping',member.id,packet:len())
 			self:send_packet(packet,member)
 			member:start_alive_check()
-			count = count + 1 
+			count = count + 1
 		end
 		if count < self.config.ping_per_interval then
 			member = table.remove(members,1)
@@ -315,7 +307,7 @@ function Flip:track(id,member,new_state)
 		logger:info("member doesn't exist anymore",server,err,id)
 		process:exit(1)
 	end
-	
+
 	-- we need to regenerate all the systems that are on this member
 	-- but async, so that the server state is correct
 	if (new_state == 'alive') or (new_state == 'down') then

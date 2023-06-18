@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   19 Nov 2014 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 
 -- sharded evenly divides the data over all nodes in the cluster. when
 -- one node is down, the data is divided over the remaining nodes
@@ -17,7 +9,7 @@ return function (data,id,is_alive)
 	local idx = 0
 	local count = #is_alive
 	local alive_count = count
-	
+
 	-- count how many servers are alive, also shift this id down if any
 	-- servers before this one have been turned off
 	local failed_count = 0

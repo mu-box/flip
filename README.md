@@ -1,4 +1,4 @@
-[![flip logo](http://nano-assets.gopagoda.io/readme-headers/flip.png)](http://nanobox.io/open-source#flip)
+[![flip logo](http://microbox.rocks/assets/readme-headers/flip.png)](http://microbox.cloud/open-source#flip)
 
 **This is a work in progess, as [luvit](https://luvit.io) is evolving its api, flip will have to adjust to match.**
 
@@ -18,11 +18,11 @@ Here is a an example config file:
 	,"ping_per_interval" : 3
 	,"ping_timeout" : 1500
 	,"log_level" : "info"
-	,"servers" : 
+	,"servers" :
 		{"flip" : {"ip" : "127.0.0.1","port" : 2200, "systems": ["ip"]}
 		,"flip1" : {"priority" : 1,"ip" : "127.0.0.1","port" : 2201, "systems": ["ip"]}
 		,"flip2" : {"ip" : "127.0.0.1","port" : 2202}}
-	,"cluster" : 
+	,"cluster" :
 		{"config": {}
 		,"system":
 			{"ip":
@@ -73,7 +73,7 @@ There are a few things here that we need to look at, the first is the cluster se
 ##Cluster
 The cluster section is where all the flipping magic happens. Here are the options that can be set and what they mean:
 
-- config - this is the config section for data that 
+- config - this is the config section for data that
 - system -  this is a description of all the different systems that are part of this cluster. Every system has a key, or id, and a config sections
 
 ##System
@@ -88,7 +88,7 @@ The cluster section is where all the flipping magic happens. Here are the option
 The next part is the 'servers' section. Each server has an id, an ip and port combo, and a list of systems that will be on the node. If a system is not in the systems list for the node, for example flip2, the node will not be responsible for any data in the system, and it will be considered a membership arbiter.
 
 - ip - the ip where the node is located
-- port - the port where flip is listening 
+- port - the port where flip is listening
 - system - a list of systems to install on the node
 - priority - a lower priority affects how data is assigned. data points will be assigned to nodes with a lower priority before other nodes, defaults to `+infinity`
 
@@ -110,4 +110,4 @@ Flip has other parameters that can be enabled to tune it to your specific applic
 
 If anyone wants to work on any issues or this future work, I will accept pull requests that have tests written and that move flip closer to being feature complete.
 
-[![flip logo](http://nano-assets.gopagoda.io/open-src/nanobox-open-src.png)](http://nanobox.io/open-source)
+[![flip logo](http://microbox.rocks/assets/open-src/microbox-open-src.png)](http://microbox.cloud/open-source)

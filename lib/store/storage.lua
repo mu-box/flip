@@ -1,13 +1,5 @@
 -- -*- mode: lua; tab-width: 2; indent-tabs-mode: 1; st-rulers: [70] -*-
 -- vim: ts=4 sw=4 ft=lua noet
----------------------------------------------------------------------
--- @author Daniel Barney <daniel@pagodabox.com>
--- @copyright 2014, Pagoda Box, Inc.
--- @doc
---
--- @end
--- Created :   4 Feb 2015 by Daniel Barney <daniel@pagodabox.com>
----------------------------------------------------------------------
 local logger = require('../logger')
 local JSON = require('json')
 local fs = require('fs')
@@ -26,7 +18,7 @@ return function(Store)
 			p(Env.set_maxdbs(env,4))
 			p(Env.set_mapsize(env,1024*1024*1024))
 			p(Env.reader_check(env))
-			if err then 
+			if err then
 				logger:fatal('unable to create store',err)
 				process:exit(1)
 			end
@@ -35,7 +27,7 @@ return function(Store)
 				fs.unlinkSync(self.db_path .. '-lock')
 				err = Env.open(env,self.db_path,Env.MDB_NOSUBDIR,tonumber('0644',8))
 			end
-			if err then 
+			if err then
 				logger:fatal('unable to open store',err)
 				process:exit(1)
 			end
@@ -65,14 +57,14 @@ return function(Store)
 			if need_bootstrap then
 				logger:info("bootstrapping store")
 
-				
+
 				-- we use the dev load command to load all the default
 				-- systems into flip
 				local load = require('../system-dev/cli/load')
 				env = getfenv(load)
 
 				-- we don't need any logs. the load command will always work
-				env.logger = 
+				env.logger =
 					{info = function() end
 					,warning = function() end
 					,error = function() end
